@@ -46,8 +46,8 @@ function gitCrawling()
             log(err)
             return
         }
-        crawlData.todayData = ($(`[data-date=${today}]`)[0]['attribs']['data-count'])
-        crawlData.yearData = ($('div.js-yearly-contributions').children('div.position-relative').children('h2').text())
+        crawlData.todayData = parseInt($(`[data-date=${today}]`)[0]['attribs']['data-count'])
+        crawlData.yearData = parseInt($('div.js-yearly-contributions').children('div.position-relative').children('h2').text())
         log("Today Commit : ",crawlData.todayData)
         log("Year Commit : ",crawlData.yearData)
     });
