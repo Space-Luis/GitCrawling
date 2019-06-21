@@ -3,14 +3,17 @@ const client = require('cheerio-httpcli')
 const user_url = "https://github.com/9992";
 const mysql = require('mysql');
 const db_info = require('./dbInfo');
-
 // user_url은 추후에 입력받게 할 예정 
 // 테스트는 링크로 진행하였지만 실제는 계정만 검색 가능할 수 있도록 할 예정입니다.
 const log = console.log
 
 // url 에 유저 닉네임이 없을 경우 입력을 요청하는 함수
-function checkUrl(con,userUrl)
+function checkUrl(userUrl)
 {
+    const con = mysql.createConnection(
+        db_info.connectInfo
+    );
+    con.connect()
     parseUrl =  url.parse(userUrl,true)
     if(parseUrl['path'] == '/'){ 
         nickName = "9992"; //여기에서 입력 시킬 수 있도록 시켜야한다.
@@ -23,6 +26,7 @@ function checkUrl(con,userUrl)
         nickName = parseUrl['path'];
         
     }
+    con.end()
 }
 
 // con.query("INSERT INTO git_user(ID) VALUES("+nickName+")", (err)=>{
@@ -41,8 +45,11 @@ function addUserId(userUrl,userName)
 }
 
 // 실질적으로 크롤링 하는 부분
-function gitCrawling(con)
+function gitCrawling()
 {
+    const con = mysql.createConnection(
+        db_info.connectInfo
+    );
     con.connect()
     const crawlData = {
         todayData : "",
@@ -74,16 +81,12 @@ function gitCrawling(con)
     });
     
     log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
+    con.end()
+
     return crawlData
 }
 
-
-const con = mysql.createConnection(
-    db_info.connectInfo
-);
 // git 함수 실행
-con.connect()
-let data = gitCrawling(con)
-checkUrl(con,"https://github.com/9992")
-checkUrl(con,"https://github.com/")
-con.end()
+let data = gitCrawling()
+checkUrl("https://github.com/9992")
+checkUrl("https://github.com/")
