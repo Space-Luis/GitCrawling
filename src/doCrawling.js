@@ -76,7 +76,9 @@ function gitCrawling(con,userUrl)
         todayData : "",
         yearData : ""
     }
-    
+    userName = url.parse(userUrl)['path']
+    console.log("크롤:",userName)
+
     Date.prototype.yyyymmdd = function(){
         var yyyy = this.getFullYear().toString();
         var mm = (this.getMonth() + 1).toString();
@@ -98,7 +100,8 @@ function gitCrawling(con,userUrl)
         crawlData.yearData = parseInt($('div.js-yearly-contributions').children('div.position-relative').children('h2').text())
         log("Today Commit : ",crawlData.todayData)
         log("Year Commit : ",crawlData.yearData)
-        con.query("INSERT INTO crawl_data(today_commit,total_commit) VALUES("+crawlData.todayData + "," + crawlData.yearData + ")");
+        //con.quert("SELECT INDEX FROM git_user WHERE = "+)
+        //con.query("INSERT INTO crawl_data(today_commit,total_commit) VALUES("+crawlData.todayData + "," + crawlData.yearData + ")");
     });
     
     log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
@@ -107,3 +110,4 @@ function gitCrawling(con,userUrl)
 
 // git 함수 실행
 doList()
+// 비동기 식으로 변경해야겠다.
