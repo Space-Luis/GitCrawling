@@ -1,32 +1,57 @@
 const url = require('url')
 const client = require('cheerio-httpcli')   
-const user_url = "https://github.com/9992";
+//const user_url = "https://github.com/9992";
 const mysql = require('mysql');
 const db_info = require('./dbInfo');
 // user_url은 추후에 입력받게 할 예정 
 // 테스트는 링크로 진행하였지만 실제는 계정만 검색 가능할 수 있도록 할 예정입니다.
 const log = console.log
 
+const con = mysql.createConnection(
+    db_info.connectInfo
+);
 // url 에 유저 닉네임이 없을 경우 입력을 요청하는 함수
+
+function doList() 
+{
+    checkUrl("https://www.github.com");
+}
+
 function checkUrl(userUrl)
 {
-    const con = mysql.createConnection(
-        db_info.connectInfo
-    );
     con.connect()
     parseUrl =  url.parse(userUrl,true)
     if(parseUrl['path'] == '/'){ 
-        nickName = "9992"; //여기에서 입력 시킬 수 있도록 시켜야한다.
-        addparseUrl = addUserId(parseUrl['hostname'],nickName);
+        nickName = "9992"; 
+        // console.log(parseUrl) , 패싱된 데이터 형태를 알기 위해 출력
+        addparseUrl = addUserId(parseUrl['href'],nickName);
         con.query("select ID from git_user WHERE ID = "+nickName, (err,data)=> {
-            console.log(data)
+            // 쿼리 값 조회 
+            if (data[0]==null){
+                // 검색 값이 비어있으면 등록되지 않은 nickName이다.
+                con.query("INSERT INTO git_user(ID) VALUES("+nickName+")")
+                //중복값 확인 후 삽입 쿼리 
+            } else {
+                console.log("기존에 등록되어 있는 닉네임입니다.")
+            }
+            var data = gitCrawling(con,addparseUrl) // 크롤링 실행 함수
         });
-        // SELECT 한 ID 행에서 nickName이 들어있는지 확인하여 확인할 수 있도록
     } else {
         nickName = parseUrl['path'];
-        
+        addparseUrl = addUserId(parseUrl['href'],nickName);
+        // 검사때문에 nickName만 따로 뺐는데, 추가적으로 변수를 사용하면 안될까?
+        // parseUrl을 쓰는게 나을까
+        con.query("select ID from git_user WHERE ID = "+nickName, (err,data)=> {
+            // 쿼리 값 조회 함수
+            if (data[0]==null){
+                con.query("INSERT INTO git_user(ID) VALUES("+nickName+")") 
+                //중복 값 확인 후 삽입 쿼리
+            } else {
+                console.log("기존에 등록되어 있는 닉네임입니다.")
+            }
+            var data = gitCrawling(con,addparseUrl); // 크롤링 실행함수
+        });
     }
-    con.end()
 }
 
 // con.query("INSERT INTO git_user(ID) VALUES("+nickName+")", (err)=>{
@@ -45,12 +70,8 @@ function addUserId(userUrl,userName)
 }
 
 // 실질적으로 크롤링 하는 부분
-function gitCrawling()
+function gitCrawling(con,userUrl)
 {
-    const con = mysql.createConnection(
-        db_info.connectInfo
-    );
-    con.connect()
     const crawlData = {
         todayData : "",
         yearData : ""
@@ -67,7 +88,7 @@ function gitCrawling()
     // yyyy-mm-dd 형태로 오늘을 저장
     
     // 입력한 url 을 통해 접속하여 데이터를 스크래핑해옴
-    client.fetch(user_url, function(err, $, res) {
+    client.fetch(userUrl, function(err, $, res) {
         if(err) {
             log(err)
             return
@@ -77,16 +98,12 @@ function gitCrawling()
         crawlData.yearData = parseInt($('div.js-yearly-contributions').children('div.position-relative').children('h2').text())
         log("Today Commit : ",crawlData.todayData)
         log("Year Commit : ",crawlData.yearData)
-        //con.query("INSERT INTO crawl_data(today_commit,total_commit) VALUES("+crawlData.todayData + "," + crawlData.yearData + ")");
+        con.query("INSERT INTO crawl_data(today_commit,total_commit) VALUES("+crawlData.todayData + "," + crawlData.yearData + ")");
     });
     
     log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
-    con.end()
-
     return crawlData
 }
 
 // git 함수 실행
-let data = gitCrawling()
-checkUrl("https://github.com/9992")
-checkUrl("https://github.com/")
+doList()
