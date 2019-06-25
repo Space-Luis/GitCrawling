@@ -17,14 +17,11 @@ function doList()
     checkUrl("https://www.github.com");
 }
 
-function checkUrl(userUrl)
+function checkUrl(userName)
 {
-    con.connect()
-    parseUrl =  url.parse(userUrl,true)
-    if(parseUrl['path'] == '/'){ 
-        nickName = "9992"; 
+    if(userName == '/'){ 
+        nickName = "9992"; //여기에 난중에 다양한 이름이 들어올 수 있는 함수로 대체 
         // console.log(parseUrl) , 패싱된 데이터 형태를 알기 위해 출력
-        addparseUrl = addUserId(parseUrl['href'],nickName);
         con.query("select ID from git_user WHERE ID = "+nickName, (err,data)=> {
             // 쿼리 값 조회 
             if (data[0]==null){
@@ -34,7 +31,6 @@ function checkUrl(userUrl)
             } else {
                 console.log("기존에 등록되어 있는 닉네임입니다.")
             }
-            var data = gitCrawling(con,addparseUrl) // 크롤링 실행 함수
         });
     } else {
         nickName = parseUrl['path'];
@@ -49,9 +45,9 @@ function checkUrl(userUrl)
             } else {
                 console.log("기존에 등록되어 있는 닉네임입니다.")
             }
-            var data = gitCrawling(con,addparseUrl); // 크롤링 실행함수
         });
     }
+    return addparseUrl = addUserId(parseUrl['href'],nickName);
 }
 
 // con.query("INSERT INTO git_user(ID) VALUES("+nickName+")", (err)=>{
@@ -70,15 +66,17 @@ function addUserId(userUrl,userName)
 }
 
 // 실질적으로 크롤링 하는 부분
-function gitCrawling(con,userUrl)
+async function gitCrawling(con,userUrl)
 {
     const crawlData = {
         todayData : "",
         yearData : ""
     }
+    con.connect()
+    checkUrlData = checkUrl(url.parse(userUrl)[ 'herf'])
     userName = url.parse(userUrl)['path']
+    
     console.log("크롤:",userName)
-
     Date.prototype.yyyymmdd = function(){
         var yyyy = this.getFullYear().toString();
         var mm = (this.getMonth() + 1).toString();
@@ -89,8 +87,10 @@ function gitCrawling(con,userUrl)
     const today = (new Date()).yyyymmdd()
     // yyyy-mm-dd 형태로 오늘을 저장
     
+    userUrl = checkUrl(userName)
+
     // 입력한 url 을 통해 접속하여 데이터를 스크래핑해옴
-    client.fetch(userUrl, function(err, $, res) {
+    client.fetch(userUrl, await function(err, $, res) {
         if(err) {
             log(err)
             return
@@ -104,6 +104,7 @@ function gitCrawling(con,userUrl)
         //con.query("INSERT INTO crawl_data(today_commit,total_commit) VALUES("+crawlData.todayData + "," + crawlData.yearData + ")");
     });
     
+
     log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
     return crawlData
 }
