@@ -18,6 +18,11 @@ npm install cheerio --save
 설치 후에 npm start에서 Command failed with exit code ENOENT 에러였나.. 아무튼 이게 발생을 해서 해결 방안으로 사용자 변수에 추가한 것
 현재 해결 진행중 19.06.14 ~ ing
 
+# 실행 순서
+크롤링
+닉네임 체킹
+업로드
+
 # 찾아봐야하는 내용
 - props , state 에 대한 내용
 - 
