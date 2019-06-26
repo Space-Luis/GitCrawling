@@ -1,4 +1,5 @@
 import React from 'react';
+import Crawl from 'doCrawling.js';
 
 function App() {
   return (
