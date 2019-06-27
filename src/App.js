@@ -1,12 +1,12 @@
 import React from 'react';
-import Crawl from 'doCrawling.js';
+import MyName from './MyName'
 
-function App() {
-  return (
-    <div>
-      test
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <MyName name="바보"/>
+    )
+  }
 }
 
 export default App;
