@@ -1,20 +1,20 @@
 const url = require('url')
 const client = require('cheerio-httpcli')   
 //const user_url = "https://github.com/9992";
-const mysql = require('mysql');
+//const mysql = require('mysql');
 const db_info = require('./dbInfo');
 // user_url은 추후에 입력받게 할 예정 
 // 테스트는 링크로 진행하였지만 실제는 계정만 검색 가능할 수 있도록 할 예정입니다.
 const log = console.log
 
-const con = mysql.createConnection(
-    db_info.connectInfo
-);
+//const con = mysql.createConnection(
+//   db_info.connectInfo
+//);
 // url 에 유저 닉네임이 없을 경우 입력을 요청하는 함수
 
 function doList() 
 {
-    gitCrawling(con,"https://www.github.com")
+    gitCrawling("https://www.github.com")
 }
 
 function checkUrl(userName)
@@ -22,16 +22,16 @@ function checkUrl(userName)
     if(userName == '/'){ 
         nickName = "9992"; //여기에 난중에 다양한 이름이 들어올 수 있는 함수로 대체 
         // console.log(parseUrl) , 패싱된 데이터 형태를 알기 위해 출력
-        con.query("select ID from git_user WHERE ID = "+nickName, (err,data)=> {
-            // 쿼리 값 조회 
-            if (data[0]==null){
-                // 검색 값이 비어있으면 등록되지 않은 nickName이다.
-                con.query("INSERT INTO git_user(ID) VALUES("+nickName+")")
-                //중복값 확인 후 삽입 쿼리 
-            } else {
-                console.log("기존에 등록되어 있는 닉네임입니다.")
-            }
-        });
+        // con.query("select ID from git_user WHERE ID = "+nickName, (err,data)=> {
+        //     // 쿼리 값 조회 
+        //     if (data[0]==null){
+        //         // 검색 값이 비어있으면 등록되지 않은 nickName이다.
+        //         con.query("INSERT INTO git_user(ID) VALUES("+nickName+")")
+        //         //중복값 확인 후 삽입 쿼리 
+        //     } else {
+        //         console.log("기존에 등록되어 있는 닉네임입니다.")
+        //     }
+        // });
     } else {
         nickName = parseUrl['path'];
         addparseUrl = addUserId(parseUrl['href'],nickName);
@@ -66,13 +66,13 @@ function addUserId(userUrl,userName)
 }
 
 // 실질적으로 크롤링 하는 부분
-async function gitCrawling(con,userUrl)
+async function gitCrawling(userUrl)
 {
     const crawlData = {
         todayData : "",
         yearData : ""
     }
-    con.connect()
+    //con.connect()
     checkUrlData = checkUrl(url.parse(userUrl)[ 'herf'])
     userName = url.parse(userUrl)['path']
     
