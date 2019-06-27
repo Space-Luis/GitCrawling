@@ -112,5 +112,3 @@ async function gitCrawling(con,userUrl)
 // git 함수 실행
 doList()
 // 비동기 식으로 변경해야겠다.
-
-module exports Crawl;
