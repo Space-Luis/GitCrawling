@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "cheerio-httpcli": "^0.7.4",
     "mysql": "^2.17.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "url": "^0.11.0"
   },
   "scripts": {
     "start": "react-scripts start",

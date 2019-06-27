@@ -14,7 +14,7 @@ const con = mysql.createConnection(
 
 function doList() 
 {
-    checkUrl("https://www.github.com");
+    gitCrawling(con,"https://www.github.com")
 }
 
 function checkUrl(userName)
