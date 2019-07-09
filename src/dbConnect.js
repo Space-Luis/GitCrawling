@@ -18,6 +18,8 @@ con.query('select * from user', (err,data) =>{
     if(err){
         console.err(err);
     } else {
+        input = "dakka";
+        var sql = "'SELECT * FROM post WHERE userId = "+insertedId+"'"
         console.log(data);
     }
 });
