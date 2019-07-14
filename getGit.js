@@ -5,13 +5,14 @@ const user_url = "https://github.com/"
 // 테스트는 링크로 진행하였지만 실제는 계정만 검색 가능할 수 있도록 할 예정입니다.
 const log = console.log
 
+log("getGit페이지가 실행되기는 합니다.")
+
 // 실질적으로 크롤링 하는 부분
-async function gitCrawling(nickName) {
+const functionCall = async function gitCrawling(nickName) {
     const crawlData = {
         todayData: "",
         yearData: ""
     }
-
     // url 에 유저 닉네임이 없을 경우 입력을 요청하는 함수
 
     // 요청에 대한 응답이 돌아왔을때 유저 닉네임을 링크로 추가 시키는 함수
@@ -31,7 +32,7 @@ async function gitCrawling(nickName) {
     // yyyy-mm-dd 형태로 오늘을 저장
 
     // 입력한 url 을 통해 접속하여 데이터를 스크래핑해옴
-    client.fetch(user_url, await function (err, $, res) {
+    client.fetch(crawlUrl, await function (err, $, res) {
         if (err) {
             log(err)
             return
@@ -39,11 +40,11 @@ async function gitCrawling(nickName) {
         // parseInt를 통해 int 형의 자료형의 데이터만 가져온다.
         crawlData.todayData = parseInt($(`[data-date=${today}]`)[0]['attribs']['data-count'])
         crawlData.yearData = parseInt($('div.js-yearly-contributions').children('div.position-relative').children('h2').text())
-        //log("Today Commit : ",crawlData.todayData)
-        //log("Year Commit : ",crawlData.yearData)
+        log("Today Commit : ",crawlData.todayData)
+        log("Year Commit : ",crawlData.yearData)
     });
 
-    //log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
+    log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
     return crawlData;
 }
 
@@ -52,6 +53,6 @@ async function gitCrawling(nickName) {
 // checkUrl("https://github.com/9992")
 // checkUrl("https://github.com/")
 
-
+module.exports = functionCall;
 // gitCrawling 내부에서 USERNAME CHECK 할 수 있도록 검색해야함
 // 검색 이후 외부 웹 페이지와 연동해 줄 수 있도록 해야함 -> (해당부분 검색해야함)

@@ -1,10 +1,11 @@
 var express = require('express');
+var getData = require('./getGit')
 var app = express();
-var bodyParser = require('body-parser');
-var session = require()
-
-app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
-    res.render('getGit')
+    console.log(getData("9992"))
+})
+
+app.listen(3000, () =>{
+    console.log("Express server stated on port 3000")
 })
