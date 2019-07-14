@@ -56,10 +56,13 @@ function gitCrawling()
     });
 
     log('크롤링 진행중 입니다.....(인터넷 속도가 느리면 실패할 수도 있습니다.)')
-    return crawlData
 }
 
 // git 함수 실행
-let data = gitCrawling()
+gitCrawling()
 checkUrl("https://github.com/9992")
 checkUrl("https://github.com/")
+
+
+// gitCrawling 내부에서 USERNAME CHECK 할 수 있도록 검색해야함
+// 검색 이후 외부 웹 페이지와 연동해 줄 수 있도록 해야함 -> (해당부분 검색해야함)
